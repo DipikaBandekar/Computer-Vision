@@ -41,6 +41,7 @@ typedef map<string, vector<string> > Dataset;
 #include <Classifier.h>
 #include <NearestNeighbor.h>
 #include <svm.h>
+#include <pca.h>
 
 // Figure out a list of files in a given directory.
 //
@@ -81,6 +82,8 @@ int main(int argc, char **argv) {
             classifier = new NearestNeighbor(class_list);
         else if (algo == "svm")
             classifier = new svm(class_list);
+	else if (algo == "pca")
+	    classifier = new pca(class_list);
         else
             throw std::string("unknown classifier " + algo);
 
