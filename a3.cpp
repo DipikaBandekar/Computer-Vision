@@ -42,6 +42,7 @@ typedef map<string, vector<string> > Dataset;
 #include <NearestNeighbor.h>
 #include <svm.h>
 #include <pca.h>
+#include <haar.h>
 
 // Figure out a list of files in a given directory.
 //
