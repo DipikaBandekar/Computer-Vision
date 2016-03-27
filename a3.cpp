@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
             classifier = new NearestNeighbor(class_list);
         else if (algo == "svm")
             classifier = new svm(class_list);
-	else if (algo == "pca")
+	else if (algo == "eigen")
 	    classifier = new pca(class_list);
         else
             throw std::string("unknown classifier " + algo);
