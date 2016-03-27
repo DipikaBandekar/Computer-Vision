@@ -93,10 +93,7 @@ int main(int argc, char **argv) {
             classifier->train(filenames);
         else if (mode == "test") {
             if (algo == "svm") {
-                string test_image;
-                cout << "Enter test image to be classified e.g. bread_1.jpg : "<<endl;
-                cin>>test_image;
-                classifier->test_svm(test_image);
+                classifier->test_svm(filenames);
             } else
                 classifier->test(filenames);
 
