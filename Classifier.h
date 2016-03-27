@@ -1,4 +1,5 @@
 #include <fstream>
+#include <vector>
 
 class Classifier {
 public:
@@ -51,110 +52,136 @@ public:
         cout << endl << "Classifier accuracy: " << correct << " of " << total << " = " << setw(5) << setprecision(2) << correct / double(total)*100 << "%";
         cout << "  (versus random guessing accuracy of " << setw(5) << setprecision(2) << 1.0 / class_list.size()*100 << "%)" << endl;
     }
-    
-    // testing new image using svm_multiclass_classify 
-    void test_svm(const string test_image) {
-        string tar_type = test_image.substr(0, 4);
-        int target = convert(tar_type);
-        if (target == 0) {
-            cout << "Invalid test image input\nPlease rename the test image in proper format to check accuracy of detection..." << endl;
-            return;
-        }
-        CImg<double> subsampled = CImg<double>(test_image.c_str()).resize(40, 40, 1, 3).unroll('x');
+
+    void train_test_svm(CImgList<double> cList, string value)//const Dataset &filenames, const string value) {
+    { 
+        int target = 1;
+        vector <int> target_arr;
+        int count = 0;
         std::ofstream ofs;
-        ofs.open("test.dat");
+        ofs.open(value.c_str());
         ofs << "#This is the first line...\n";
-        ofs << target << " "; //target class is given 1 by default
-        for (int i = 0; i < subsampled.size(); i++) {
-            if (subsampled[i] != 0) {
-                ofs << i + 1 << ":" << subsampled[i] << " ";
+        //for (Dataset::const_iterator c_iter = filenames.begin(); c_iter != filenames.end(); ++c_iter) {
+        for(int i=0; i<cList.size(); i++)
+        { 
+            CImg<double> currImg = cList[i];
+           
+            
+            for (int j = 0; j< currImg.height(); j++) {
+                //CImg<double> temp1 = (CImg<double>(c_iter->second[i].c_str())).resize(50, 50, 1, 3).unroll('x');
+                target_arr.push_back(target);
+                count++;
+                ofs << target << " ";
+                for (int k = 0; k < currImg.width(); k++) {
+                        ofs << k + 1 << ":" << currImg(k,j) << " ";
+                    }
+                ofs << "#" << i << "\n";
             }
+            target = target + 1;
         }
-        ofs << "#abcde\n";
         ofs.close();
-        if (check_file("test.dat") && check_file("model_file"))
-            system("./svm_multiclass_classify test.dat model_file output_file");
-        cout << "Output file generated..." << endl;
-        if (check_file("output_file")) {
-            ifstream inFile;
-            inFile.open("output_file");
-            int first;
-            while (inFile >> first) {
-                if (first == target)
-                    cout << "Correctly classified...\nTest image belongs to class " << first << " : "<<tar_type<<endl;
-                else
-                    cout << "Class classified by svm : " <<first<< endl;
-                inFile.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        int c = 0;
+        int correct = 0;
+        if (value == "test") {
+            if (check_file(value.c_str()) && check_file("model_file"))
+                system("./svm_multiclass_classify test model_file prediction_file");
+            cout << "prediction file generated..." << endl;
+            // checking the accuracy of detection...
+            if (check_file("prediction_file") && check_file("test.dat")) {
+                ifstream out_file;
+                out_file.open("prediction_file");
+                int first;
+                while (out_file >> first && c < target_arr.size()) {
+                    if (static_cast<int> (first) == target_arr[c]) {
+                        correct++;
+                    }
+                    c++;
+                    out_file.ignore(numeric_limits<streamsize>::max(), '\n');
+                }
+                out_file.close();
+                float accuracy = 0.0;
+                if (c == target_arr.size())
+                    accuracy = (static_cast<float> (correct) / static_cast<float> (c)) * 100.0;
+                cout << "Accuracy of SVM Classifier:: " << accuracy << "%" << endl;
             }
         }
-    }
-//check whether a file exists
-    bool check_file(string input_file) {
-        ifstream f(input_file.c_str());
-        if (f.good()) {
-            f.close();
-            return true;
-        } else {
-            cout << input_file << " does not exist!!!" << endl;
-            f.close();
-            return false;
+        else if(value == "train")
+        {
+                 system("./svm_multiclass_learn -c 1.0 train model_file");
+
         }
-    }
-// to convert string class name to corresponding integer value
-    int convert(const string name) {
-        if (name == "bage")
-            return 1;
-        else if (name == "brea")
-            return 2;
-        else if (name == "brow")
-            return 3;
-        else if (name == "chic")
-            return 4;
-        else if (name == "chur")
-            return 5;
-        else if (name == "croi")
-            return 6;
-        else if (name == "fren")
-            return 7;
-        else if (name == "hamb")
-            return 8;
-        else if (name == "hotd")
-            return 9;
-        else if (name == "jamb")
-            return 10;
-        else if (name == "kung")
-            return 11;
-        else if (name == "lasa")
-            return 12;
-        else if (name == "muff")
-            return 13;
-        else if (name == "pael")
-            return 14;
-        else if (name == "pizz")
-            return 15;
-        else if (name == "popc")
-            return 16;
-        else if (name == "pudd")
-            return 17;
-        else if (name == "sala")
-            return 18;
-        else if (name == "salm")
-            return 19;
-        else if (name == "scon")
-            return 20;
-        else if (name == "spag")
-            return 21;
-        else if (name == "sush")
-            return 22;
-        else if (name == "taco")
-            return 23;
-        else if (name == "tira")
-            return 24;
-        else if (name == "waff")
-            return 25;
         else
-            return 0;
+            cout<<"Error"<<endl;
     }
-protected:
-    vector<string> class_list;
-};
+        //for all test images
+
+        void test_svm(const Dataset & filenames) {
+            int target = 1;
+            vector <int> target_arr;
+            int count = 0;
+            std::ofstream ofs;
+            ofs.open("test.dat");
+            ofs << "#This is the first line...\n";
+            for (Dataset::const_iterator c_iter = filenames.begin(); c_iter != filenames.end(); ++c_iter) {
+
+                cout << "Processing svm model " << c_iter->first << " : " << target << endl;
+
+                for (int i = 0; i < c_iter->second.size(); i++) {
+                    CImg<double> temp1 = (CImg<double>(c_iter->second[i].c_str())).resize(50, 50, 1, 3).unroll('x');
+                    target_arr.push_back(target);
+                    count++;
+                    ofs << target << " ";
+                    for (int j = 0; j < temp1.size(); j++) {
+                        if (temp1[j] != 0) {
+                            ofs << j + 1 << ":" << temp1[j] << " ";
+                        }
+                    }
+                    ofs << "#" << c_iter->first << "\n";
+                }
+                target = target + 1;
+            }
+            ofs.close();
+
+            int c = 0;
+            int correct = 0;
+            if (check_file("test.dat") && check_file("model_file"))
+                system("./svm_multiclass_classify test.dat model_file prediction_file");
+
+            cout << "prediction file generated..." << endl;
+            // checking the accuracy of detection...
+            if (check_file("prediction_file") && check_file("test.dat")) {
+                ifstream out_file;
+                out_file.open("prediction_file");
+                int first;
+                while (out_file >> first && c < target_arr.size()) {
+                    if (static_cast<int> (first) == target_arr[c]) {
+                        correct++;
+                    }
+                    c++;
+                    out_file.ignore(numeric_limits<streamsize>::max(), '\n');
+                }
+                out_file.close();
+                float accuracy = 0.0;
+                if (c == target_arr.size())
+                    accuracy = (static_cast<float> (correct) / static_cast<float> (c)) * 100.0;
+                cout << "Accuracy of SVM Classifier:: " << accuracy << "%" << endl;
+            }
+        }
+        //check whether a file exists
+
+        bool check_file(string input_file) {
+            ifstream f(input_file.c_str());
+            if (f.good()) {
+                f.close();
+                return true;
+            } else {
+                cout << input_file << " does not exist!!!" << endl;
+                f.close();
+                return false;
+            }
+        }
+
+        protected:
+        vector<string> class_list;
+    };
