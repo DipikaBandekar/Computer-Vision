@@ -1,0 +1,6 @@
+g++ a3.cpp -o a3 -lX11 -lpthread -I. -Isiftpp -O3 siftpp/sift.cpp
+C:\Users\dipik\AppData\Local\Temp\ccT2wmyj.o:a3.cpp:(.text+0x13f): undefined reference to `__imp_SetDIBitsToDevice'
+C:\Users\dipik\AppData\Local\Temp\ccT2wmyj.o:a3.cpp:(.text$_ZN12cimg_library11CImgDisplay7displayIhEERS0_RKNS_4CImgIT_EE[_ZN12cimg_library11CImgDisplay7displayIhEERS0_RKNS_4CImgIT_EE]+0xd4): undefined reference to `__imp_SetDIBitsToDevice'
+collect2.exe: error: ld returned 1 exit status
+Makefile:2: recipe for target 'all' failed
+make: *** [all] Error 1
