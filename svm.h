@@ -19,7 +19,6 @@ public:
         ofs.open("training.dat");
         ofs << "#This is the first line...\n";
         for (Dataset::const_iterator c_iter = filenames.begin(); c_iter != filenames.end(); ++c_iter) {
-
             cout << "Processing svm model " << c_iter->first << " : " << target << endl;
 
             for (int i = 0; i < c_iter->second.size(); i++) {
@@ -46,7 +45,7 @@ public:
         cout << "empty load function" << endl;
     }
 
-    virtual string classify(const string &filename) {
+    virtual string classify(const string &filename, const Dataset &filenames) {
         cout << "empty classify function" << endl;
     }
 

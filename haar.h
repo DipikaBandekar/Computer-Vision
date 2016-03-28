@@ -23,6 +23,6 @@ protected:
         	return (CImg<double>(filename.c_str())).resize(size, size, 1, 3).unroll('x');
     	}
 
-    static const int size = 40; // subsampled image resolution
+    static const int size = 100; // subsampled image resolution
     map<string, CImg<double> > models; // trained models
    };

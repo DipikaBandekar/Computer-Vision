@@ -83,8 +83,8 @@ int main(int argc, char **argv) {
             classifier = new NearestNeighbor(class_list);
         else if (algo == "svm")
             classifier = new svm(class_list);
-	else if (algo == "eigen")
-	    classifier = new pca(class_list);
+	    else if (algo == "eigen")
+            classifier = new pca(class_list);
         else
             throw std::string("unknown classifier " + algo);
 
@@ -93,8 +93,15 @@ int main(int argc, char **argv) {
             classifier->train(filenames);
         else if (mode == "test") {
             if (algo == "svm") {
-                classifier->test_svm(filenames);
-            } else
+                string test_image;
+                cout << "Enter test image to be classified e.g. bread_1.jpg : "<<endl;
+                cin>>test_image;
+                //classifier->test_svm(test_image);
+             }else if(algo == "eigen")
+             {
+                cout<<"inside algo == eigen"<<endl;
+                classifier->test(filenames);
+             }else
                 classifier->test(filenames);
 
         } else
