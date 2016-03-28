@@ -161,25 +161,7 @@ class pca : public Classifier {
 			}
 	}
 
-	CImgList<double> roll(CImg<double> image) 
-	{
-	    CImgList<double> list;
-        for (int x = 0; x < image.width(); x++) {
-            CImg<double> new_image(size, size, 1, 1,0);
-            int j = 0;
-            int k = 0;
-            for (; j < image.height();) {
-                for (int i = 0; i < size; i++) {
-                    new_image(i, k, 0, 0) = image(x, j, 0, 0);
-                    j++;
-                }
-                k++;
-            }
-            list.push_back(new_image);
-        }
-        cout<<"sizeofList: "<<list.size()<<endl;
-        return list;
-    }
+	
 
 
 	CImg<double> covariate(CImg<double> class_vectors)
