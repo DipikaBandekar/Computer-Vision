@@ -3,7 +3,7 @@ public:
 	haar(const vector<string> &_class_list) : Classifier(_class_list)
 	{}
 
-	virtual void train()
+	virtual void train(const Dataset &filenames)
 	{
 
 	}
@@ -13,7 +13,7 @@ public:
         cout << "empty load function" << endl;
     }
 
-    virtual string classify(const string &filename) {
+    virtual string classify(const string &filename,const Dataset &filenames) {
         cout << "empty classify function" << endl;
     }
 
