@@ -1,15 +1,14 @@
 class haar : public Classifier {
 public:
-	haar(const vector<string> &_class_list) : Classifier(_class_list)
-	{}
 
-	virtual void train()
-	{
+    haar(const vector<string> &_class_list) : Classifier(_class_list) {
+    }
 
-	}
+    virtual void train(const Dataset &filenames) {
+        cout << "empty train function" << endl;
+    }
 
-
-   virtual void load_model() {
+    virtual void load_model() {
         cout << "empty load function" << endl;
     }
 
@@ -18,11 +17,11 @@ public:
     }
 
 protected:
-	CImg<double> extract_features(const string &filename) 
-	{
-        	return (CImg<double>(filename.c_str())).resize(size, size, 1, 3).unroll('x');
-    	}
+
+    CImg<double> extract_features(const string &filename) {
+        return (CImg<double>(filename.c_str())).resize(size, size, 1, 3).unroll('x');
+    }
 
     static const int size = 40; // subsampled image resolution
     map<string, CImg<double> > models; // trained models
-   };
+};
