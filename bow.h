@@ -140,6 +140,8 @@ public:
                     int index = 5;
                     for (int k = 0; k < means.size(); k++) {
                         for (int l = 0; l < 128; l++) {
+                            cout<<masterdesc[descr].descriptor[l]<<endl;
+                            cout<<means[k];
                             float diff = (masterdesc[descr].descriptor[l]) - means[k];
                             sum = sum + abs(diff);
                         }
