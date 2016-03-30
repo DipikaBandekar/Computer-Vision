@@ -43,6 +43,7 @@ typedef map<string, vector<string> > Dataset;
 #include <svm.h>
 #include <pca.h>
 #include <haar.h>
+#include<bow.h>
 #include <deep.h>
 
 // Figure out a list of files in a given directory.
@@ -82,6 +83,8 @@ int main(int argc, char **argv) {
         Classifier *classifier = 0;
         if (algo == "nn")
             classifier = new NearestNeighbor(class_list);
+        else if (algo == "bow")
+            classifier = new bow(class_list);
         else if (algo == "svm")
             classifier = new svm(class_list);
 	    else if (algo == "eigen")
@@ -97,6 +100,8 @@ int main(int argc, char **argv) {
         if(mode == "train"){
         if(algo == "svm")
             classifier->svm(filenames, "train");
+         else if (algo == "bow")
+            classifier -> train(filenames);
         else if(algo == "deep")
             classifier->train_test_deep(filenames, "train");
         else if(algo == "haar")
@@ -112,6 +117,8 @@ int main(int argc, char **argv) {
                 //cout<<"inside algo == eigen"<<endl;
                 classifier->test(filenames);
              }
+            else if (algo == "bow")
+                classifier->test_bow(filenames);
             else if( algo == "deep")
             {
                 classifier->train_test_deep(filenames, "test");
